@@ -1,5 +1,5 @@
 /*
- *     Foresst: build.gradle.kts
+ *     Foresst: LoggingStrategyBuilder.kt
  *     Copyright (C) 2025 mtctx
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -16,27 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    kotlin("jvm")
-}
+package dev.mtctx.foresst.logger.strategy
 
-group = "dev.mtctx.foresst"
-version = "0.0.1"
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.sync.Mutex
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
-}
+class LoggingStrategyBuilder(
+    strategyName: String,
+    coroutineScope: CoroutineScope,
+    mutex: Mutex,
+    ansiColor: String,
+) : LoggingStrategy(strategyName, coroutineScope, mutex, ansiColor)

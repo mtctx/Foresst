@@ -22,6 +22,10 @@ plugins {
 
 dependencies {
     dokka(project(":core"))
+    dokka(project(":network"))
+    dokka(project(":modding-api"))
+    dokka(project(":graphics"))
+    dokka(project(":input"))
 }
 
 dokka {

@@ -1,5 +1,5 @@
 /*
- *     Foresst: build.gradle.kts
+ *     Foresst: LoggerConfig.kt
  *     Copyright (C) 2025 mtctx
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -16,27 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    kotlin("jvm")
-}
+package dev.mtctx.foresst.logger
 
-group = "dev.mtctx.foresst"
-version = "0.0.1"
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import java.nio.file.Path
+import kotlin.time.ExperimentalTime
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    api("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
-}
+@OptIn(ExperimentalTime::class)
+data class LoggerConfig(
+    val name: String = "Foresst",
+    val logsDirectory: Path = LoggerUtils.logsDir,
+    val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob()),
+    val format: (timestamp: String, strategyName: String, loggerName: String, content: Array<out Any>) -> String = { timestamp, strategyName, loggerName, content ->
+        "[$timestamp] - $strategyName - $loggerName - ${content.joinToString(",")}"
+    }
+)
