@@ -1,6 +1,6 @@
 /*
  *     Foresst: LoggingStrategyBuilder.kt
- *     Copyright (C) 2025 mtctx
+ *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
