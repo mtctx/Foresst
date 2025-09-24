@@ -81,6 +81,9 @@ dependencies {
     implementation("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
     implementation("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     implementation("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+
+    implementation("io.github.kotlin-graphics:glm:0.9.9.1-12")
+
     testImplementation(kotlin("test"))
 }
 
