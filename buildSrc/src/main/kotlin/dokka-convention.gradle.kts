@@ -1,6 +1,6 @@
 /*
  *     Foresst: dokka-convention.gradle.kts
- *     Copyright (C) 2025 mtctx
+ *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ plugins {
 dokka {
     dokkaSourceSets.configureEach {
         sourceLink {
+            remoteUrl.set(uri("https://github.com/mtctx/foresst/"))
             localDirectory.set(rootDir)
         }
     }
