@@ -20,7 +20,7 @@ package dev.mtctx.foresst.graphics.gl
 
 import dev.mtctx.foresst.graphics.Renderable
 import dev.mtctx.foresst.resource.Resource
-import dev.mtctx.foresst.resource.type.Text
+import dev.mtctx.foresst.resource.asText
 import glm_.mat2x2.Mat2
 import glm_.mat3x3.Mat3
 import glm_.mat4x4.Mat4
@@ -86,7 +86,7 @@ class GLShader(
         val shaderId = glCreateShader(module.shaderType.id)
         if (shaderId == 0) throw RuntimeException("glCreateShader returned 0 for type=${module.shaderType}")
 
-        glShaderSource(shaderId, module.res.typed(Text))
+        glShaderSource(shaderId, module.res.asText())
         glCompileShader(shaderId)
 
         val status = glGetShaderi(shaderId, GL_COMPILE_STATUS)

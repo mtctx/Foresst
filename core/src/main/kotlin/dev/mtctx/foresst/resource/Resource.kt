@@ -20,8 +20,10 @@ package dev.mtctx.foresst.resource
 
 import java.io.File
 import java.io.InputStream
+import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 class Resource(resourcePath: String) {
 
@@ -32,14 +34,10 @@ class Resource(resourcePath: String) {
     private val tempFile: Path by lazy {
         val tempFile = Files.createTempFile("foresst-", ".tmp")
         tempFile.toFile().deleteOnExit()
-        Files.copy(inputStream, tempFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        Files.copy(inputStream, tempFile, StandardCopyOption.REPLACE_EXISTING)
         tempFile
     }
 
     val file: File
         get() = tempFile.toFile()
-
-    fun <T> typed(type: ContentType<T>): T {
-        return type.convert(Pair(inputStream, file))
-    }
 }

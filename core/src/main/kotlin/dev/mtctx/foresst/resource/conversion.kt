@@ -1,6 +1,6 @@
 /*
- *     Foresst: Resource.kt
- *     Copyright (C) 2025 mtctx
+ *     Foresst: conversion.kt
+ *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -18,9 +18,20 @@
 
 package dev.mtctx.foresst.resource
 
-import java.io.File
 import java.io.InputStream
+import java.nio.charset.Charset
 
-interface ContentType<T> {
-    fun convert(isp: Pair<InputStream, File>): T
-}
+fun Resource.asText(charset: String = "UTF-8"): String =
+    file.readText(Charset.forName(charset))
+
+fun Resource.asByteArray(): ByteArray =
+    file.readBytes()
+
+fun Resource.asInputStream(): InputStream =
+    file.inputStream()
+
+fun Resource.asReader(charset: String = "UTF-8") =
+    file.reader(Charset.forName(charset))
+
+fun Resource.asLines(charset: String = "UTF-8"): Sequence<String> =
+    file.useLines(Charset.forName(charset)) { it.toList() }.asSequence()
