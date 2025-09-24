@@ -20,23 +20,75 @@ package dev.mtctx.foresst.logger
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import java.nio.file.Path
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class LoggerDSL {
     var name: String = "Foresst"
     var logsDirectory: Path = LoggerUtils.logsDir
-    var coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob())
+    private var _coroutineScope: CoroutineScope? = null
+    var coroutineScope: CoroutineScope
+        get() = _coroutineScope ?: CoroutineScope(SupervisorJob()).also { _coroutineScope = it }
+        set(value) {
+            _coroutineScope?.cancel()
+            _coroutineScope = value
+        }
     var format: (timestamp: String, strategyName: String, loggerName: String, content: Array<out Any>) -> String =
         { timestamp, strategyName, loggerName, content ->
             "[$timestamp] - $strategyName - $loggerName - ${content.joinToString { it.toString() }}"
         }
     var logChannelSize: Int = Channel.UNLIMITED
-    var logChannel: Channel<LogMessage> = Channel(logChannelSize)
+    private var _logChannel: Channel<LogMessage>? = null
+    var logChannel: Channel<LogMessage>
+        get() = _logChannel ?: Channel<LogMessage>(logChannelSize).also { _logChannel = it }
+        set(value) {
+            _logChannel = value
+        }
+    private var logRotationConfig: LogRotation.Config = LogRotation.Config(true, 30.days, 1.days)
 
-    fun build(): Logger = Logger(LoggerConfig(name, logsDirectory, coroutineScope, format))
+    fun logRotation(block: LogRotation.() -> Unit) {
+        logRotationConfig = LogRotation().apply(block).build()
+    }
+
+    fun build(): Logger {
+        require(name.isNotBlank()) { "Logger name cannot be blank." }
+        require(logsDirectory.toFile().isDirectory) { "Logs directory must be a directory." }
+        require(logChannelSize > 0) { "Log channel size must be greater than 0." }
+        require(format.invoke("", "", "", emptyArray()).isNotBlank()) { "Format must not be blank." }
+
+        return Logger(
+            LoggerConfig(
+                name,
+                logsDirectory,
+                coroutineScope,
+                format,
+                logChannelSize,
+                logChannel,
+                logRotationConfig
+            )
+        )
+    }
+
+    class LogRotation {
+        var enabled: Boolean = true
+        var duration: Duration = 30.days
+        var interval: Duration = 1.days
+
+        fun build(): Config {
+            require(duration.isPositive()) { "Log rotation duration must be greater than 0." }
+            require(duration.isFinite()) { "Log rotation duration must be finite." }
+            require(duration.inWholeDays > 0) { "Log rotation duration must be greater than 0 days." }
+
+            return Config(enabled, duration, interval)
+        }
+
+        data class Config(val enabled: Boolean, val duration: Duration, val interval: Duration)
+    }
 }
 
 fun createLogger(block: LoggerDSL.() -> Unit): Logger = LoggerDSL().apply(block).build()

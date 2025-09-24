@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -38,8 +39,6 @@ open class LoggingStrategy(
     private val strategyName: String, private val coroutineScope: CoroutineScope, private val mutex: Mutex,
     private val ansiColor: String
 ) {
-    private val path = LoggerUtils.getLogFileForStrategy(strategyName)
-
     open suspend fun log(
         config: LoggerConfig,
         timestamp: Instant,
@@ -58,7 +57,7 @@ open class LoggingStrategy(
                     )
                 )
             )
-            writeToFile(message)
+            writeToFile(LoggerUtils.getLogFileForStrategy(config.logsDirectory, strategyName), message)
         } catch (e: IOException) {
             System.err.println("Log write error: " + e.message)
         }
@@ -75,11 +74,11 @@ open class LoggingStrategy(
     )
 
     @Throws(IOException::class)
-    open suspend fun writeToFile(message: String): Unit =
+    open suspend fun writeToFile(logFilePath: Path, message: String): Unit =
         mutex.withLock {
             withContext(Dispatchers.IO) {
                 Files.write(
-                    path,
+                    logFilePath,
                     listOf(message),
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
