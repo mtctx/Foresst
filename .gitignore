@@ -5,6 +5,9 @@ build/
 !**/src/test/**/build/
 logs/
 
+docs/
+!docs/build.gradle.kts
+
 ### IntelliJ IDEA ###
 .idea/*
 !.idea/copyright/
