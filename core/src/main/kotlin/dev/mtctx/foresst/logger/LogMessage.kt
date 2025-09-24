@@ -19,9 +19,36 @@
 package dev.mtctx.foresst.logger
 
 import dev.mtctx.foresst.logger.strategy.LoggingStrategy
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 data class LogMessage(
-    val content: Any,
+    val content: Array<out Any>,
     val logToConsole: Boolean,
+    val timestamp: Instant = Clock.System.now(),
     val strategy: LoggingStrategy,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LogMessage
+
+        if (logToConsole != other.logToConsole) return false
+        if (!content.contentEquals(other.content)) return false
+        if (timestamp != other.timestamp) return false
+        if (strategy != other.strategy) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = logToConsole.hashCode()
+        result = 31 * result + content.contentHashCode()
+        result = 31 * result + timestamp.hashCode()
+        result = 31 * result + strategy.hashCode()
+        return result
+    }
+}

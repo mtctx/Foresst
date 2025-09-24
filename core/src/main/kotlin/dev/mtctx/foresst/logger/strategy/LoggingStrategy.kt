@@ -44,12 +44,20 @@ open class LoggingStrategy(
         config: LoggerConfig,
         timestamp: Instant,
         logToConsole: Boolean,
-        vararg content: Any
+        content: Array<out Any>
     ) {
-        val message = generateMessage(config, timestamp, *content)
+        val formattedTimestamp = LoggerUtils.getFormattedTime(timestamp)
+        val message = generateMessage(config, formattedTimestamp, content)
 
         try {
-            if (logToConsole) println(ANSI.translateToANSI(message))
+            if (logToConsole) println(
+                ANSI.translateToANSI(
+                    message.replace(
+                        "[$formattedTimestamp] - $strategyName - ",
+                        "[$formattedTimestamp] - $ansiColor$strategyName${ANSI.RESET} - "
+                    )
+                )
+            )
             writeToFile(message)
         } catch (e: IOException) {
             System.err.println("Log write error: " + e.message)
@@ -57,9 +65,10 @@ open class LoggingStrategy(
     }
 
     open fun generateMessage(
-        config: LoggerConfig, timestamp: Instant, vararg content: Any
+        config: LoggerConfig, formattedTimestamp: String,
+        content: Array<out Any>
     ): String = config.format(
-        LoggerUtils.getFormattedTime(timestamp),
+        formattedTimestamp,
         strategyName,
         config.name,
         content

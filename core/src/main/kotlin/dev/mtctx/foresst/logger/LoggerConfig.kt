@@ -20,6 +20,7 @@ package dev.mtctx.foresst.logger
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import java.nio.file.Path
 import kotlin.time.ExperimentalTime
 
@@ -29,6 +30,8 @@ data class LoggerConfig(
     val logsDirectory: Path = LoggerUtils.logsDir,
     val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob()),
     val format: (timestamp: String, strategyName: String, loggerName: String, content: Array<out Any>) -> String = { timestamp, strategyName, loggerName, content ->
-        "[$timestamp] - $strategyName - $loggerName - ${content.joinToString(",")}"
-    }
+        "[$timestamp] - $strategyName - $loggerName - ${content.joinToString { it.toString() }}"
+    },
+    val logChannelSize: Int = Channel.UNLIMITED,
+    val logChannel: Channel<LogMessage> = Channel(logChannelSize),
 )
