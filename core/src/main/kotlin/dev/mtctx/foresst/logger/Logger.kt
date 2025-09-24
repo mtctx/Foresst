@@ -1,6 +1,6 @@
 /*
  *     Foresst: Logger.kt
- *     Copyright (C) 2025 mtctx
+ *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -76,16 +76,17 @@ class Logger(private val config: LoggerConfig) {
         this.name = name
     }
 
-    suspend fun log(strategy: LoggingStrategy, logToConsole: Boolean, vararg content: Any) =
-        strategy.log(
-            config,
-            Clock.System.now(),
+    suspend fun log(logMessage: LogMessage) = logChannel.send(logMessage)
+    suspend fun log(strategy: LoggingStrategy, logToConsole: Boolean, vararg content: Any) = log(
+        LogMessage(
+            arrayOf(*content),
             logToConsole,
-            content
+            Clock.System.now(),
+            strategy
         )
+    )
 
     fun logSync(logMessage: LogMessage): ChannelResult<Unit> = logChannel.trySend(logMessage)
-
     fun logSync(strategy: LoggingStrategy, logToConsole: Boolean, timestamp: Instant, vararg content: Any) = logSync(
         LogMessage(
             arrayOf(*content),
@@ -96,38 +97,38 @@ class Logger(private val config: LoggerConfig) {
     )
 
     suspend fun debug(vararg content: Any, logToConsole: Boolean = true) =
-        log(defaultLoggingStrategies.debugStrategy, logToConsole, *content)
+        log(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.debugStrategy))
 
     @UseSynchronousFunctionsWithCaution
-    fun debugSync(vararg content: Any, logToConsole: Boolean = true) =
+    fun debugSync(vararg content: Any, logToConsole: Boolean = true): ChannelResult<Unit> =
         logSync(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.debugStrategy))
 
     suspend fun error(vararg content: Any, logToConsole: Boolean = true) =
-        log(defaultLoggingStrategies.errorStrategy, logToConsole, *content)
+        log(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.errorStrategy))
 
     @UseSynchronousFunctionsWithCaution
-    fun errorSync(vararg content: Any, logToConsole: Boolean = true) =
+    fun errorSync(vararg content: Any, logToConsole: Boolean = true): ChannelResult<Unit> =
         logSync(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.errorStrategy))
 
     suspend fun fatal(vararg content: Any, logToConsole: Boolean = true) =
-        log(defaultLoggingStrategies.fatalStrategy, logToConsole, *content)
+        log(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.fatalStrategy))
 
     @UseSynchronousFunctionsWithCaution
-    fun fatalSync(vararg content: Any, logToConsole: Boolean = true) =
+    fun fatalSync(vararg content: Any, logToConsole: Boolean = true): ChannelResult<Unit> =
         logSync(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.fatalStrategy))
 
     suspend fun info(vararg content: Any, logToConsole: Boolean = true) =
-        log(defaultLoggingStrategies.infoStrategy, logToConsole, *content)
+        log(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.infoStrategy))
 
     @UseSynchronousFunctionsWithCaution
-    fun infoSync(vararg content: Any, logToConsole: Boolean = true) =
+    fun infoSync(vararg content: Any, logToConsole: Boolean = true): ChannelResult<Unit> =
         logSync(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.infoStrategy))
 
     suspend fun warn(vararg content: Any, logToConsole: Boolean = true) =
-        log(defaultLoggingStrategies.warnStrategy, logToConsole, *content)
+        log(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.warnStrategy))
 
     @UseSynchronousFunctionsWithCaution
-    fun warnSync(vararg content: Any, logToConsole: Boolean = true) =
+    fun warnSync(vararg content: Any, logToConsole: Boolean = true): ChannelResult<Unit> =
         logSync(LogMessage(content, logToConsole, Clock.System.now(), defaultLoggingStrategies.warnStrategy))
 }
 
