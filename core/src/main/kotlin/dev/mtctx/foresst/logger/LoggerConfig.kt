@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import java.nio.file.Path
+import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -34,4 +35,5 @@ data class LoggerConfig(
     },
     val logChannelSize: Int = Channel.UNLIMITED,
     val logChannel: Channel<LogMessage> = Channel(logChannelSize),
+    val logRotation: LoggerDSL.LogRotation.Config = LoggerDSL.LogRotation.Config(true, 30.days, 1.days)
 )

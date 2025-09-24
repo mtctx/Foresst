@@ -16,7 +16,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package dev.mtctx.foresst.logger
 
 import dev.mtctx.foresst.logger.strategy.LoggingStrategy
@@ -25,26 +24,22 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ChannelResult
 import kotlinx.coroutines.sync.Mutex
 import java.nio.file.Files
+import kotlin.io.path.*
 import kotlin.time.Clock
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(UseSynchronousFunctionsWithCaution::class)
-suspend fun main() {
-    val logger = createLogger()
-    logger.info("Hello, World!")
-
-    logger.waitForLogChannelToClose()
-}
-
 @OptIn(ExperimentalTime::class)
 class Logger(private val config: LoggerConfig) {
-    private var name: String
+    var name: String
     var coroutineScope: CoroutineScope
     var mutex = Mutex()
     private val defaultLoggingStrategies: DefaultLoggingStrategies
     private val logChannel: Channel<LogMessage>
     private val logChannelJob: Job
+    private var shouldLogRotationStop = false
+    private val logRotationJob: Job?
 
     init {
         Files.createDirectories(config.logsDirectory)
@@ -53,6 +48,32 @@ class Logger(private val config: LoggerConfig) {
         defaultLoggingStrategies = DefaultLoggingStrategies(coroutineScope, mutex)
         logChannel = config.logChannel
         logChannelJob = startListeningForMessages()
+
+        logRotationJob = if (config.logRotation.enabled) rotateLogs(config.logRotation.duration) else null
+    }
+
+    @OptIn(ExperimentalPathApi::class)
+    fun rotateLogs(duration: Duration) = coroutineScope.launch {
+        while (!shouldLogRotationStop) {
+            val now = Clock.System.now()
+            val threshold = now - duration
+
+            config.logsDirectory.toAbsolutePath().forEachDirectoryEntry { path ->
+                if (!path.isDirectory()) return@forEachDirectoryEntry
+
+                val dirDate = try {
+                    LoggerUtils.parseDateFromText(path.nameWithoutExtension)
+                } catch (_: Exception) {
+                    return@forEachDirectoryEntry
+                }
+
+                if (dirDate < threshold) {
+                    path.deleteRecursively()
+                }
+            }
+
+            delay(config.logRotation.interval)
+        }
     }
 
     private fun startListeningForMessages() = coroutineScope.launch {
@@ -67,13 +88,13 @@ class Logger(private val config: LoggerConfig) {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun waitForLogChannelToClose() = runBlocking {
+    fun waitForCoroutinesFinish() = runBlocking {
         logChannel.close()
         logChannelJob.join()
-    }
-
-    fun name(name: String) {
-        this.name = name
+        shouldLogRotationStop = true
+        logRotationJob?.join()
+        coroutineScope.cancel()
+        config.coroutineScope.cancel()
     }
 
     suspend fun log(logMessage: LogMessage) = logChannel.send(logMessage)

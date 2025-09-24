@@ -18,12 +18,9 @@
 
 package dev.mtctx.foresst.logger
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
+import kotlinx.datetime.*
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
-import kotlinx.datetime.toLocalDateTime
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.time.Clock
@@ -51,15 +48,14 @@ object LoggerUtils {
     }
 
     fun getFormattedTime(timestamp: Instant = Clock.System.now()): String =
-        timestamp.toLocalDateTime(TimeZone.currentSystemDefault()).format(TIME_FORMAT)
+        timestamp.toLocalDateTime(TimeZone.UTC).format(TIME_FORMAT)
 
-    fun getFormattedDate(): String =
-        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).format(DATE_FORMAT)
+    fun getFormattedDate(date: Instant = Clock.System.now()): String =
+        date.toLocalDateTime(TimeZone.UTC).format(DATE_FORMAT)
 
+    val logsDir: Path = Path("logs", getFormattedDate()).toAbsolutePath()
 
-    val logsDir = Path("logs", getFormattedDate()).toAbsolutePath()
+    fun getLogFileForStrategy(path: Path, strategyName: String): Path = path.resolve("${strategyName.lowercase()}.log")
 
-    fun getLogFileForStrategy(strategyName: String): Path {
-        return logsDir.resolve("${strategyName.lowercase()}.log")
-    }
+    fun parseDateFromText(text: String): Instant = DATE_FORMAT.parse(text).toInstant(TimeZone.UTC)
 }
