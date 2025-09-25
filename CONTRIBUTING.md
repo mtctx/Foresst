@@ -2,7 +2,10 @@
 
 Hey there! 👋
 
-We’re super excited that you want to contribute to **Foresst**. It’s an open-source, high-performance Minecraft implementation, and we couldn’t do it without awesome community members like you. By contributing, you’re agreeing to follow our **[Code of Conduct](https://www.google.com/search?q=CODE_OF_CONDUCT.md)**—basically, just be kind, respectful, and collaborative.
+We’re super excited that you want to contribute to **Foresst**. It’s an open-source, high-performance Minecraft
+implementation, and we couldn’t do it without awesome community members like you. By contributing, you’re agreeing to
+follow our **[Code of Conduct](https://www.google.com/search?q=CODE_OF_CONDUCT.md)**—basically, just be kind,
+respectful, and collaborative.
 
 ## How You Can Help
 
@@ -34,7 +37,8 @@ Here’s how to get your local setup ready:
    ```
 
 3. **Open the project**
-   Open the `Foresst` folder in your favorite IDE (IntelliJ IDEA or VS Code with Kotlin plugins work great). Gradle should automatically detect the modules for you.
+   Open the `Foresst` folder in your favorite IDE (IntelliJ IDEA or VS Code with Kotlin plugins work great). Gradle
+   should automatically detect the modules for you.
 
 4. **Run the project**
 
@@ -48,7 +52,8 @@ Here’s how to get your local setup ready:
 
 ## Reporting a Bug
 
-The more details you give, the faster we can fix it. When opening an issue on [GitHub Issues](https://www.google.com/search?q=https://github.com/mtctx/Foresst/issues), try to include:
+The more details you give, the faster we can fix it. When opening an issue
+on [GitHub Issues](https://www.google.com/search?q=https://github.com/mtctx/Foresst/issues), try to include:
 
 * A **short, clear title** describing the problem
 * **Steps to reproduce** the issue
@@ -89,12 +94,14 @@ We love contributions! Before you start, make sure you’re familiar with our co
 
 ### Code Style
 
-We follow standard Kotlin conventions. Make your code clean, readable, and consistent. You can use your IDE’s formatter or a linter like **Qodana** (configured in `qodana.yml`).
+We follow standard Kotlin conventions. Make your code clean, readable, and consistent. You can use your IDE’s formatter
+or a linter like **Qodana** (configured in `qodana.yml`).
 
 ---
 
 ## Need Help?
 
-Got questions, stuck on setup, or want to brainstorm an idea? Then just create a **[Discussion](https://github.com/mtctx/Foresst/discussions)**.
+Got questions, stuck on setup, or want to brainstorm an idea? Then just create a *
+*[Discussion](https://github.com/mtctx/Foresst/discussions)**.
 
 Thanks for helping make Foresst even better! We really appreciate it. 💜

@@ -3,28 +3,28 @@
  *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
+ *     it under the terms of the GNU Affero General Public License as published
+ *     by the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *     GNU Affero General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
+ *     You should have received a copy of the GNU Affero General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package dev.mtctx.foresst.graphics.renderers
 
 import dev.mtctx.foresst.graphics.Renderer
+import dev.mtctx.foresst.graphics.gl.GLDataType
 import dev.mtctx.foresst.graphics.gl.GLShader
 import dev.mtctx.foresst.graphics.gl.GLVertexArray
 import dev.mtctx.foresst.graphics.gl.buffer.GLBufferLayout
-import dev.mtctx.foresst.graphics.gl.buffer.GLVertexBuffer
 import dev.mtctx.foresst.graphics.gl.buffer.GLIndexBuffer
-import dev.mtctx.foresst.graphics.gl.GLDataType
+import dev.mtctx.foresst.graphics.gl.buffer.GLVertexBuffer
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
@@ -46,12 +46,12 @@ class VoxelRenderer(private val shader: GLShader) : Renderer {
         val vertices = floatArrayOf(
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,
-            0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            0.5f, -0.5f,  0.5f,
-            0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f
         )
 
         val indices = intArrayOf(
@@ -63,7 +63,7 @@ class VoxelRenderer(private val shader: GLShader) : Renderer {
             1, 2, 6, 6, 5, 1
         )
 
-        val layout = GLBufferLayout(mapOf("position" to GLDataType.Vec3))
+        val layout = GLBufferLayout(mapOf("position" to GLDataType.VEC3))
         val vbo = GLVertexBuffer(vertices, layout)
         val ibo = GLIndexBuffer(indices)
 

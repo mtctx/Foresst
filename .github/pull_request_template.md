@@ -7,13 +7,16 @@ assignees: ''
 ---
 
 ## Description
+
 Please include a summary of the change and which issue is addressed.
 A detailed description of the changes helps reviewers understand the context and purpose of the PR.
 
 **This PR resolves / addresses the following issue(s):**
+
 - Closes # (replace with issue number)
 
 ## Type of change
+
 Please delete options that are not relevant.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
@@ -24,6 +27,7 @@ Please delete options that are not relevant.
 - [ ] Build process update (e.g., changes to `gradle.kts` files)
 
 ## How Has This Been Tested?
+
 Please describe the tests that you ran to verify your changes.
 Provide instructions so we can reproduce the testing if needed.
 Also list any relevant details for your test configuration.
@@ -33,6 +37,7 @@ Also list any relevant details for your test configuration.
 - [ ] Added integration tests
 
 ## Checklist
+
 Please ensure you have completed all of the following items before submitting your PR.
 
 - [ ] I have read the **[CONTRIBUTING.md](CONTRIBUTING.md)** and **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** files.

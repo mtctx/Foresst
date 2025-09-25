@@ -1,5 +1,5 @@
 /*
- *     Foresst: GLVertexBuffer.kt
+ *     Foresst: Conversion.kt
  *     Copyright (C) 2025 mtctx, kvxd
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -16,39 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.mtctx.foresst.graphics.gl.buffer
+package dev.mtctx.foresst.resource
 
-import dev.mtctx.foresst.graphics.Renderable
-import org.lwjgl.opengl.GL46.*
+import java.io.InputStream
+import java.nio.charset.Charset
 
-class GLVertexBuffer(vertices: FloatArray, val layout: GLBufferLayout) : Renderable {
-
-    private var id: Int = 0
-    var count: Int = vertices.size
-
-    init {
-        id = glCreateBuffers()
-        bind()
-
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW)
-    }
-
-    fun bind() {
-        glBindBuffer(GL_ARRAY_BUFFER, id)
-    }
-
-    fun update(vertices: FloatArray) {
-        bind()
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices)
-        count = vertices.size
-    }
-
-    override fun render() {
-        bind()
-    }
-
-    override fun close() {
-        glDeleteBuffers(id)
-    }
-
-}
+fun Resource.asText(charset: Charset = Charsets.UTF_8): String = file.readText(charset)
+fun Resource.asByteArray(): ByteArray = file.readBytes()
+fun Resource.asInputStream(): InputStream = file.inputStream()
+fun Resource.asReader(charset: Charset = Charsets.UTF_8) = file.reader(charset)
+fun Resource.asLines(charset: Charset = Charsets.UTF_8): Sequence<String> =
+    file.useLines(charset) { it.toList() }.asSequence()
