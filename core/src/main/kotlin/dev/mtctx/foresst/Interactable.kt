@@ -27,7 +27,9 @@ interface Interactable {
 interface InteractableBlock : Interactable {
     fun onWalkOver(entity: LivingEntity)
     fun onJumpOn(entity: LivingEntity)
+    fun onBreak(entity: LivingEntity)
     fun onDrop(entity: LivingEntity)
+    fun onPlace(entity: LivingEntity)
     fun onPickUp(entity: LivingEntity)
 }
 

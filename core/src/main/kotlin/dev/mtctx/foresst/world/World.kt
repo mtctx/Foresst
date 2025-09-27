@@ -32,12 +32,12 @@ open class World(val name: String) {
         // TODO: Return block from location
     }
 
-    fun placeBlock(block: Block, action: (block: Block, world: World) -> Unit) {
+    fun placeBlock(block: Block, action: (block: Block, world: World) -> Unit = { _, _ -> }) {
         // TODO: Place block
         action(block, this)
     }
 
-    fun destroyBlock(block: Block, action: (block: Block, world: World) -> Unit) {
+    fun destroyBlock(block: Block, action: (block: Block, world: World) -> Unit = { _, _ -> }) {
         // TODO: Destroy block
         action(block, this)
     }

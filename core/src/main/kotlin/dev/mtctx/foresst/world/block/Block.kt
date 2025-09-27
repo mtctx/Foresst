@@ -31,8 +31,6 @@ open class Block(
     protected open val identifier = type.identifier
     protected open val drops = type.drops
     protected open var texture: String = type.texture
-    protected open var onBreakAction: (block: Block, world: World) -> Unit = { _, _ -> }
-    protected open var onPlaceAction: (block: Block, world: World) -> Unit = { _, _ -> }
     open val isInteractable: Boolean = false
 
     open fun texture(): String = texture
@@ -43,10 +41,10 @@ open class Block(
         this.location = location
     }
 
-    open fun place(): Outcome<Boolean> {
+    open fun place(action: (block: Block, world: World) -> Unit = { _, _ -> }): Outcome<Boolean> {
         return when (val worldOutcome = world()) {
             is Outcome.Success -> {
-                place(worldOutcome.value)
+                place(worldOutcome.value, action)
                 success()
             }
 
@@ -54,14 +52,14 @@ open class Block(
         }
     }
 
-    open fun place(world: World) {
-        world.placeBlock(this, onBreakAction)
+    open fun place(world: World, action: (block: Block, world: World) -> Unit = { _, _ -> }) {
+        world.placeBlock(this, action)
     }
 
-    open fun destroy(): Outcome<Boolean> {
+    open fun destroy(action: (block: Block, world: World) -> Unit = { _, _ -> }): Outcome<Boolean> {
         return when (val worldOutcome = world()) {
             is Outcome.Success -> {
-                destroy(worldOutcome.value)
+                destroy(worldOutcome.value, action)
                 success()
             }
 
@@ -69,38 +67,8 @@ open class Block(
         }
     }
 
-    open fun destroy(world: World) {
-        world.destroyBlock(this, onBreakAction)
-    }
-
-    open fun onPlace(action: (block: Block, world: World) -> Unit): Block {
-        this.onPlaceAction = action
-        return this
-    }
-
-    open fun onPlace(block: Block = this) {
-        when (val worldOutcome = block.world()) {
-            is Outcome.Success -> {
-                this.onPlaceAction(block, worldOutcome.value)
-            }
-
-            else -> {}
-        }
-    }
-
-    open fun onBreak(action: (block: Block, world: World) -> Unit): Block {
-        this.onBreakAction = action
-        return this
-    }
-
-    open fun onBreak(block: Block = this) {
-        when (val worldOutcome = block.world()) {
-            is Outcome.Success -> {
-                this.onBreakAction(block, worldOutcome.value)
-            }
-
-            else -> {}
-        }
+    open fun destroy(world: World, action: (block: Block, world: World) -> Unit = { _, _ -> }) {
+        world.destroyBlock(this, action)
     }
 
     fun world(): Outcome<World> {
