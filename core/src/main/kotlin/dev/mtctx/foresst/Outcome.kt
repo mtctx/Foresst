@@ -31,7 +31,8 @@ sealed interface Outcome<out T> {
         override fun toString(): String = "Success(value=$value, type=${value!!.javaClass.name})"
     }
 
-    data class Failure(val message: String, val throwable: Throwable? = null) : Outcome<Nothing> {
+    data class Failure(val message: String, val throwable: Throwable? = null, val outcome: Outcome<*>? = null) :
+        Outcome<Nothing> {
         override val succeeded: Boolean get() = false
         override fun toString(): String =
             "Failure(message=$message" + if (throwable != null) ", cause=${throwable.javaClass.name})" else ")"
@@ -125,5 +126,8 @@ inline fun <T> success(block: () -> T): Success<T> {
     return Success(block())
 }
 
-fun failure(message: String, throwable: Throwable? = null): Failure = Failure(message, throwable)
-fun failure(throwable: Throwable): Failure = Failure("No message provided.", throwable)
+fun failure(message: String, throwable: Throwable? = null, outcome: Outcome<*>? = null): Failure =
+    Failure(message, throwable, outcome)
+
+fun failure(throwable: Throwable, outcome: Outcome<*>? = null): Failure = Failure("No message provided.", throwable)
+fun failure(outcome: Outcome<*>? = null): Failure = Failure("No message provided.", outcome = outcome)

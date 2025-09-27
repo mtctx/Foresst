@@ -19,6 +19,8 @@
 package dev.mtctx.foresst
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
@@ -37,6 +39,8 @@ object ForesstDispatchers {
     private val loggerExecutor = Executors.newSingleThreadExecutor { Thread(it, "Foresst-Logger-Thread") }
     val Logger: CoroutineDispatcher = loggerExecutor.asCoroutineDispatcher()
 
+    fun createModScope(modName: String): CoroutineScope = CoroutineScope(Mods + SupervisorJob())
+
     fun shutdown() {
         windowExecutor.shutdown()
         modsExecutor.shutdown()
@@ -44,3 +48,5 @@ object ForesstDispatchers {
         gameExecutor.shutdown()
     }
 }
+
+fun createModScope(modName: String): CoroutineScope = ForesstDispatchers.createModScope(modName)
