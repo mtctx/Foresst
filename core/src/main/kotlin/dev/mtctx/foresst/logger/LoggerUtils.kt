@@ -22,7 +22,6 @@ import kotlinx.datetime.*
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -53,7 +52,7 @@ object LoggerUtils {
     fun getFormattedDate(date: Instant = Clock.System.now()): String =
         date.toLocalDateTime(TimeZone.UTC).format(DATE_FORMAT)
 
-    val logsDir: Path = Path("logs", getFormattedDate()).toAbsolutePath()
+    val logsDir: Path by lazy { dev.mtctx.foresst.io.logsDir.resolve(getFormattedDate()).toAbsolutePath() }
 
     fun getLogFileForStrategy(path: Path, strategyName: String): Path = path.resolve("${strategyName.lowercase()}.log")
 

@@ -31,8 +31,8 @@ data class LoggerConfig(
     val name: String = "Foresst",
     val logsDirectory: Path = LoggerUtils.logsDir,
     val coroutineScope: CoroutineScope = CoroutineScope(ForesstDispatchers.Logger + SupervisorJob()),
-    val format: (timestamp: String, strategyName: String, loggerName: String, content: Array<out Any>) -> String = { timestamp, strategyName, loggerName, content ->
-        "[$timestamp] - $strategyName - $loggerName - ${content.joinToString { it.toString() }}"
+    val format: (timestamp: String, coloredStrategyName: String, loggerName: String, content: Array<out Any>) -> String = { timestamp, coloredStrategyName, loggerName, content ->
+        "[$timestamp] - $coloredStrategyName - $loggerName - ${content.joinToString { it.toString() }}"
     },
     val logChannelSize: Int = Channel.UNLIMITED,
     val logChannel: Channel<LogMessage> = Channel(logChannelSize),

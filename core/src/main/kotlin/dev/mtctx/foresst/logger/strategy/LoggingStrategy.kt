@@ -50,12 +50,7 @@ open class LoggingStrategy(
 
         try {
             if (logToConsole) println(
-                ANSI.translateToANSI(
-                    message.replace(
-                        "[$formattedTimestamp] - $strategyName - ",
-                        "[$formattedTimestamp] - $ansiColor$strategyName${ANSI.RESET} - "
-                    )
-                )
+                ANSI.translateToANSI(message)
             )
             writeToFile(LoggerUtils.getLogFileForStrategy(config.logsDirectory, strategyName), message)
         } catch (e: IOException) {
@@ -68,7 +63,7 @@ open class LoggingStrategy(
         content: Array<out Any>
     ): String = config.format(
         formattedTimestamp,
-        strategyName,
+        "$ansiColor$strategyName${ANSI.RESET}",
         config.name,
         content
     )

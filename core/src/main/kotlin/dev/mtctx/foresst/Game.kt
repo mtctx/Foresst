@@ -21,6 +21,21 @@ package dev.mtctx.foresst
 import dev.mtctx.foresst.logger.UseSynchronousFunctionsWithCaution
 import dev.mtctx.foresst.logger.createLogger
 import kotlinx.coroutines.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+
+@OptIn(ExperimentalSerializationApi::class)
+val json: Json by lazy {
+    Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        prettyPrint = true
+        encodeDefaults = true
+        allowStructuredMapKeys = true
+        explicitNulls = false
+    }
+}
+
 
 @OptIn(UseSynchronousFunctionsWithCaution::class)
 open class Game(private vararg val modules: GameModule = emptyArray()) {
